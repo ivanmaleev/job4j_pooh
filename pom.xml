@@ -8,6 +8,18 @@
     <artifactId>job4j_pooh</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>job4j_pooh</name>
+    <description>A simple job4j_pooh.</description>
+    <!-- FIXME change it to the project's website -->
+    <url>http://www.example.com</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>14</maven.compiler.source>
+        <maven.compiler.target>14</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.hamcrest</groupId>
