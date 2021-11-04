@@ -12,30 +12,21 @@ public class TopicService implements Service {
     @Override
     public Resp process(Req req) {
         String text = "";
-        String status = "";
+        String status = "204";
         if ("POST".equalsIgnoreCase(req.httpRequestType())) {
             Map<String, Queue<String>> userQueues = queues.get(req.getSourceName());
-            if (userQueues == null) {
-                status = "204";
-            } else {
+            if (userQueues != null) {
                 userQueues.forEach((key, value) -> value.offer(req.getParam()));
                 status = "200";
             }
         } else if ("GET".equalsIgnoreCase(req.httpRequestType())) {
-            Map<String, Queue<String>> userQueues = queues.putIfAbsent(req.getSourceName(), new ConcurrentHashMap<>());
-            if (userQueues == null) {
-                userQueues = queues.get(req.getSourceName());
-            }
-            Queue<String> userQueue = userQueues.putIfAbsent(req.getParam(), new ConcurrentLinkedQueue<>());
-            if (userQueue == null) {
-                userQueue = userQueues.get(req.getParam());
-            }
-            text = userQueue.poll();
-            if (text == null) {
-                text = "";
-                status = "204";
-            } else {
+            queues.putIfAbsent(req.getSourceName(), new ConcurrentHashMap<>());
+            queues.get(req.getSourceName()).putIfAbsent(req.getParam(), new ConcurrentLinkedQueue<>());
+            text = queues.get(req.getSourceName()).get(req.getParam()).poll();
+            if (text != null) {
                 status = "200";
+            } else {
+                text = "";
             }
         }
         return new Resp(text, status);

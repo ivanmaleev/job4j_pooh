@@ -13,24 +13,21 @@ public class QueueService implements Service {
     @Override
     public Resp process(Req req) {
         String text = "";
-        String status = "";
+        String status = "204";
         if ("POST".equalsIgnoreCase(req.httpRequestType())) {
-            Queue<String> queue = queues.putIfAbsent(req.getSourceName(), new ConcurrentLinkedQueue<>());
-            if (queue == null) {
-                queue = queues.get(req.getSourceName());
-            }
-            queue.offer(req.getParam());
-            status = "200";
+            queues.putIfAbsent(req.getSourceName(), new ConcurrentLinkedQueue<>());
+            queues.get(req.getSourceName()).offer(req.getParam());
         } else if ("GET".equalsIgnoreCase(req.httpRequestType())) {
             Queue<String> queue = queues.get(req.getSourceName());
-            if (queue == null) {
-                status = "204";
+            if (queue != null) {
+                status = "200";
+                text = queue.poll();
+                if (text != null) {
+                    status = "200";
+                } else {
+                    text = "";
+                }
             }
-            text = queue.poll();
-            if (text == null) {
-                text = "";
-            }
-            status = "200";
         }
         return new Resp(text, status);
     }

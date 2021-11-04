@@ -67,7 +67,7 @@ public class Req {
         }
 
         public VerifyContent verify() {
-            String[] lines = content.split("\r\n");
+            String[] lines = content.split(System.lineSeparator());
             if (lines.length < 2) {
                 throw new IllegalArgumentException();
             }
