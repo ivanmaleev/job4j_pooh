@@ -29,9 +29,9 @@ public class PoohServer {
                         var content = new String(Arrays.copyOfRange(buff, 0, total), StandardCharsets.UTF_8);
                         var req = Req.of(content);
                         var resp = modes.get(req.getPoohMode()).process(req);
-                        String ls = System.lineSeparator();
-                        out.write(("HTTP/1.1 " + resp.status() + ls).getBytes());
-                        out.write((resp.text().concat(ls)).getBytes());
+                        var text = "Accept: */*\n\n" + resp.text();
+                        out.write("HTTP/1.1 200 OK\r\n".getBytes());
+                        out.write(text.getBytes());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
